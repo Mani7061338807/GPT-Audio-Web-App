@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=1">
+<title>Result from GPT</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<style>
+    *,*:after,*:before{
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+body{
+  font-family: arial;
+  font-size: 16px;
+  margin: 0;
+  color: #000;
+  
+  background:linear-gradient(to right bottom, #232B67,#80049f);
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;;
+}
+
+.container{
+  width: 680px;;
+  text-align: center;
+  padding: 30px;
+  background: #3841ef;
+  border-radius: 15px;
+}
+
+#inputText{
+  width: 400px;
+  height: 200px;
+  padding: 20px;
+  resize: none;
+  font-size: 20px;
+  font-family: arial;
+  box-shadow: 0 0 5px #8c8c8c ;
+  border: 3px solid #8c8c8c;
+  border-radius: 10px;
+  outline: 0;
+}
+.box{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  
+}
+#voiceIco{
+  font-size: 150px;
+  width: 210px;
+  text-align:left;
+}
+#convert {
+  padding: 15px 35px;
+  border-radius: 5px;
+  border: 0;
+  font-size: 20px;
+  background: #05737f;
+  color: #fff;
+}
+#goBackButton{
+    padding: 15px 35px;
+  border-radius: 5px;
+  border: 0;
+  font-size: 20px;
+  background:linear-gradient(to right bottom, #232B67,#80049f);
+  color: #fff;
+}
+#res{
+    width: 50%;
+}
+</style>
+<body>
+  
+  <div class="container">
+    <h1>Response from GPT </h1>
+    <p>Note:- please listen full answer then move for another question</p>
+    <div class="box">
+      <input name="text" type="text" id="inputText" style="display: none;">
+      <p id="res"><%=result%></p>
+      <span id="voiceIco">🔈</span>
+    </div>
+    <button id="convert">Get Speech</button>
+    <form action="/" method="get">
+
+        <button type="submit" id="goBackButton">Go back to ask more</button>
+    </form>
+  </div>
+
+
+<script>
+    var convert = document.getElementById('convert'),
+voiceIco = document.getElementById('voiceIco'),
+speech  = document.getElementById('inputText'),
+p = document.getElementById('res');
+
+// clear previous result when click on go back 
+var goBackButton = document.getElementById('goBackButton');
+goBackButton.addEventListener('click', function() {
+    inputText.value = '';          // Clear the value of the input field
+    resParagraph.innerHTML = '';   // Clear the content of the <p> tag
+  });
+
+count = 1;
+
+speech.value = p.innerHTML;
+speech.addEventListener('change',function(){
+  speechText = this.value;
+  speechSynthesis.cancel();
+  convert.innerHTML = "Get voice result";
+  voiceIco.innerHTML="🔈";
+});
+
+// convert text to speech
+convert.addEventListener('click',function(){
+  if(!speechSynthesis.speaking || speechSynthesis.pause()){
+    speechText = speech.value;
+    var speechVoice = new SpeechSynthesisUtterance();
+    var voices = speechSynthesis.getVoices();
+    speechVoice.voice = voices[2];
+    speechVoice.text = speechText;
+    speechVoice.lang = 'en-US';
+    speechSynthesis.speak(speechVoice);  
+  }
+
+if(count == 1){
+  convert.innerHTML = "Play";
+  voiceIco.innerHTML="🔊";
+  speechSynthesis.resume()
+  setTimeout(() => {
+    count = 2;
+  }, 300);
+  
+}else{
+  speechSynthesis.paused
+  convert.innerHTML = "Pause";
+  voiceIco.innerHTML="🔈";
+  count = 1;
+
+}
+setInterval(() => {
+  if(!speechSynthesis.speaking && count == 2){
+    convert.innerHTML = "Get voice result";
+    voiceIco.innerHTML="🔈";
+    count = 1;
+    console.log(count)
+  }
+},100);
+
+
+})
+
+</script>
+</body>
+</html>
