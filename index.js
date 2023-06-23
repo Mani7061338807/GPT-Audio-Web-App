@@ -16,7 +16,6 @@ app.get('/',(req,res)=>{
 app.post('/response',async (req, res) => {
     // get the voice input as a text
     const  transcript  = req.body.transcript;
-
     const result = await processText(transcript);
     res.render('result.ejs' , {result});
 
